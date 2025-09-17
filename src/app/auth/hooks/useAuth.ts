@@ -1,5 +1,8 @@
 // useAuth.ts - 負責處理邏輯的 Hook
+'use client'
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 import { createClient } from '@/lib/supabase/client';
 
 export function useAuth() {
@@ -7,9 +10,12 @@ export function useAuth() {
     const [error, setError] = useState<string | null>(null);
 
     const supabase = createClient();
+    const router = useRouter();
+
 
     // 註冊
     const signUp = async (email: string, password: string, user_name: string) => {
+
         setLoading(true);
 
         // 1. 呼叫 Supabase Auth 註冊，這會自動在 auth.users 建立新使用者
@@ -61,6 +67,12 @@ export function useAuth() {
         // 處理其他未預期的情況
         return { success: false, error: '登入失敗，請稍後再試。' };
     };
+    // 登出
+    const signOut = async () => {
+        await supabase.auth.signOut();
+        console.log('登出成功');
+        router.push('/auth/signin');
+    };
 
-    return { signUp, signIn, loading, error };
+    return { signUp, signIn, signOut, loading, error };
 }

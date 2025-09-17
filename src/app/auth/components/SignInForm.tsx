@@ -1,5 +1,7 @@
 "use client";
+
 import { useAuth } from '../hooks/useAuth'; // 註冊
+import { useRouter } from 'next/navigation';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -16,6 +18,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Link from 'next/link'
 
 const FormSchema = z.object({
     email: z.string().email({
@@ -28,8 +31,8 @@ const FormSchema = z.object({
 
 
 export default function SignInForm() {
-
-    const { signIn, loading, error } = useAuth(); // 使用 useAuth Hook
+    const { signIn, signOut, loading, error } = useAuth(); // 使用 useAuth Hook
+    const router = useRouter(); 
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -38,17 +41,18 @@ export default function SignInForm() {
             password: "",
         },
     });
-
+    
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-        console.log(123)
-        console.log(data)
+        console.log(123);
+        console.log(data);
 
-        const result = await signIn(data.email, data.password );
-        console.log(result)
+        const result = await signIn(data.email, data.password);
+        console.log(result);
 
         if (result.success) {
             toast("登入成功！", { description: "歡迎回來！" });
             form.reset();
+            router.push('/auth/member');
         } else {
             toast("登入失敗。", { description: result.error || '發生未知錯誤' });
         }
@@ -84,7 +88,9 @@ export default function SignInForm() {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit">SignIn</Button>
+                        <Link className='ml-5' href='/auth/signup'>SignUp</Link>
+
                     </form>
                 </Form>
             </div>

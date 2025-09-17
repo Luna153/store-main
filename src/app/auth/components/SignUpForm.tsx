@@ -24,7 +24,7 @@ const FormSchema = z.object({
     user_name: z.string().min(2, {
         message: "使用者名稱必須至少 2 個字元。",
     }),
-    password: z.string().min(8, {
+    password: z.string().min(2, {
         message: "密碼必須至少 8 個字元。",
     }),
 });
