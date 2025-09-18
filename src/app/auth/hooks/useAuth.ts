@@ -1,15 +1,14 @@
 // useAuth.ts - 負責處理邏輯的 Hook
-'use client'
+'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-import { createClient } from '@/lib/supabase/client';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export function useAuth() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const supabase = createClient();
+    const supabase = createClientComponentClient();
     const router = useRouter();
 
 
@@ -60,6 +59,11 @@ export function useAuth() {
             return { success: false, error: error.message };
         }
         if (data?.user && data?.session) {
+            
+            // 在導向前先刷新路由
+            router.refresh();
+            // 導向到會員頁面
+            router.push('/auth/member');
             // 登入成功，回傳成功狀態
             return { success: true };
         }
@@ -71,7 +75,7 @@ export function useAuth() {
     const signOut = async () => {
         await supabase.auth.signOut();
         console.log('登出成功');
-        router.push('/auth/signin');
+        router.refresh();
     };
 
     return { signUp, signIn, signOut, loading, error };

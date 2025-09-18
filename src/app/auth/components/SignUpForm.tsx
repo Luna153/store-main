@@ -1,5 +1,7 @@
 "use client";
 import { useAuth } from '../hooks/useAuth'; // 註冊
+import { useRouter } from 'next/navigation';
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -31,7 +33,7 @@ const FormSchema = z.object({
 
 
 export default function SignUpForm() {
-
+    const router = useRouter();
     const { signUp, loading, error } = useAuth(); // 使用 useAuth Hook
 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -44,13 +46,14 @@ export default function SignUpForm() {
     });
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-        console.log(data)
+        // console.log(data);
 
-        const result = await signUp(data.email, data.password, data.user_name );
+        const result = await signUp(data.email, data.password, data.user_name);
 
         if (result && result.success) {
             toast("註冊成功！", { description: "請檢查你的電子郵件以驗證帳號。" });
             form.reset();
+            router.push('/auth/signin');
         } else {
             toast("註冊失敗。", { description: result ? result.error : '發生未知錯誤' });
         }

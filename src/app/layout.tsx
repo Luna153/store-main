@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-// import { SessionProvider } from "next-auth/react";
 import AuthProvider from './providers'; // 引入我們剛剛建立的客戶端元件
 import { ThemeProvider } from './providers/theme-provider';
-// 'use client'
+import { useState } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,8 +32,8 @@ export default function RootLayout({
       >
         {/* <ThemeProvider>
           <AuthProvider> */}
-            {children}
-          {/* </AuthProvider>
+          {children}
+        {/* </AuthProvider>
         </ThemeProvider> */}
         {/* <SessionProvider>
           {children}

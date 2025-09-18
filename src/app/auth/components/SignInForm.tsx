@@ -1,7 +1,10 @@
 "use client";
 
-import { useAuth } from '../hooks/useAuth'; // 註冊
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../hooks/useAuth'; // 註冊
+import Link from 'next/link';
+import { useSessionContext } from '@supabase/auth-helpers-react';
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -11,14 +14,11 @@ import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
-    FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Link from 'next/link'
 
 const FormSchema = z.object({
     email: z.string().email({
@@ -31,8 +31,8 @@ const FormSchema = z.object({
 
 
 export default function SignInForm() {
-    const { signIn, signOut, loading, error } = useAuth(); // 使用 useAuth Hook
-    const router = useRouter(); 
+    const { signIn } = useAuth(); // 使用 useAuth Hook
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -41,18 +41,20 @@ export default function SignInForm() {
             password: "",
         },
     });
-    
+
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-        console.log(123);
-        console.log(data);
+        toast("登入成功！", { description: "歡迎回來！" });
+        // console.log(data);
 
         const result = await signIn(data.email, data.password);
-        console.log(result);
+        // console.log(result);
 
         if (result.success) {
+            // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
             toast("登入成功！", { description: "歡迎回來！" });
             form.reset();
-            router.push('/auth/member');
+            router.push('/auth/member')
+            // router.refresh();
         } else {
             toast("登入失敗。", { description: result.error || '發生未知錯誤' });
         }
