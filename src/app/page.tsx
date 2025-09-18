@@ -13,11 +13,9 @@ import {
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import AddList from './components/AddList';
 import InputForm from './components/InputForm';
 import { DataTable } from './components/DataTable';
 import React, { useEffect, useState } from 'react';
-import MemberList from './components/MemberList';
 
 export default function IndexPage() {
 
