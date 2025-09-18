@@ -8,7 +8,7 @@ export function useAuth() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const supabase = createClientComponentClient();
+    const supabase =  createClientComponentClient();
     const router = useRouter();
 
 
@@ -63,7 +63,7 @@ export function useAuth() {
             // 在導向前先刷新路由
             router.refresh();
             // 導向到會員頁面
-            router.push('/auth/member');
+            // router.push('/auth/member');
             // 登入成功，回傳成功狀態
             return { success: true };
         }

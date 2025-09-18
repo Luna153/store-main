@@ -3,8 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../hooks/useAuth'; // 註冊
 import Link from 'next/link';
-import { useSessionContext } from '@supabase/auth-helpers-react';
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -43,22 +41,15 @@ export default function SignInForm() {
     });
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast("登入成功！", { description: "歡迎回來！" });
-        // console.log(data);
-
         const result = await signIn(data.email, data.password);
-        // console.log(result);
-
         if (result.success) {
-            // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
             toast("登入成功！", { description: "歡迎回來！" });
             form.reset();
-            router.push('/auth/member')
-            // router.refresh();
+            // router.refresh()
+            // router.push('/auth/member');
         } else {
             toast("登入失敗。", { description: result.error || '發生未知錯誤' });
         }
-
     }
 
     return (

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import AuthProvider from './providers'; // 引入我們剛剛建立的客戶端元件
-import { ThemeProvider } from './providers/theme-provider';
-import { useState } from "react";
+import { Toaster } from "@/components/ui/sonner"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,14 +28,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <ThemeProvider>
-          <AuthProvider> */}
           {children}
-        {/* </AuthProvider>
-        </ThemeProvider> */}
-        {/* <SessionProvider>
-          {children}
-        </SessionProvider> */}
+          <Toaster />
 
       </body>
     </html>
