@@ -2,66 +2,61 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/utils/supabase/client';
 
 export function useAuth() {
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
-    const supabase =  createClientComponentClient();
+    const supabase = createClient();
     const router = useRouter();
 
 
     // 註冊
-    const signUp = async (email: string, password: string, user_name: string) => {
-
-        setLoading(true);
-
+    const signUp = async (name: string, email: string, password: string) => {
         // 1. 呼叫 Supabase Auth 註冊，這會自動在 auth.users 建立新使用者
-        const { data: userData, error: authError } = await supabase.auth.signUp({
+        let { data: signupData, error: signupError } = await supabase.auth.signUp({
             email,
             password
         });
 
-        if (authError) {
-            setLoading(false);
-            return { success: false, error: authError.message };
+        if (signupError) {
+            return { signupError: signupError.message };
         }
 
         // 2. 如果 Auth 註冊成功，取得新使用者的 ID
-        const userId = userData?.user?.id;
-        if (!userId) {
-            setLoading(false);
-            return { success: false, error: "無法獲取使用者 ID。" };
-        }
-
-        // 3. 使用 insert() 函式將 user_name 和 userId 寫入你的 MemberTable
-        //    這裡的表格名稱請確保和你的資料庫中完全一致
-        const { data: memberData, error: memberError } = await supabase
+        const userId = signupData?.user.id;
+        let { data: insertData, error: insertError } = await supabase
             .from('MemberTable')
-            .insert({ id: userId, user_name: user_name });
+            .insert({ id: userId, name: name },);
 
-        setLoading(false);
-
-        if (memberError) {
-            return { success: false, error: memberError.message };
+        if (insertError) {
+            return { insertFail: insertError.message };
+        } else {
+            // 3. 所有步驟都成功，回傳成功訊息
+            router.push('/account');
+            return { success: true };
         }
-
-        // 4. 所有步驟都成功，回傳成功訊息
-        return { success: true };
     };
     // 登入
     const signIn = async (email: string, password: string) => {
-        setLoading(true);
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        let { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
         if (error) {
             // 登入失敗，回傳錯誤訊息
             return { success: false, error: error.message };
         }
+
+        if (data) {
+            console.log('登入成功');
+            console.log(data);
+            router.push('/account');
+        }
         if (data?.user && data?.session) {
-            
+
             // 在導向前先刷新路由
-            router.refresh();
+            // router.refresh();
             // 導向到會員頁面
             // router.push('/auth/member');
             // 登入成功，回傳成功狀態
@@ -69,14 +64,23 @@ export function useAuth() {
         }
 
         // 處理其他未預期的情況
-        return { success: false, error: '登入失敗，請稍後再試。' };
+        // return { success: false, error: '登入失敗，請稍後再試。' };
     };
     // 登出
     const signOut = async () => {
         await supabase.auth.signOut();
+        router.push('/');
         console.log('登出成功');
-        router.refresh();
+        // router.refresh();
+    };
+    // 查詢
+    const queryData = async () => {
+        let { data: MemberTable, error } = await supabase
+            .from('MemberTable')
+            .select('*');
+        console.log(MemberTable);
+        // return MemberTable[0].name
     };
 
-    return { signUp, signIn, signOut, loading, error };
+    return { signUp, signIn, signOut, queryData, error };
 }

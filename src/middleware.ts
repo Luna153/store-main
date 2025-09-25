@@ -1,35 +1,57 @@
-// middleware.ts
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+// /middleware.ts
+import { createServerClient } from '@supabase/ssr';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
-  const { data: { user } } = await supabase.auth.getUser();
+export async function middleware(request: NextRequest) {
+    console.log('middleware running');
+    let supabaseResponse = NextResponse.next({
+        request,
+    });
 
-  const publicRoutes = ['/auth/signin', '/auth/signup'];
-  const isPublicRoute = publicRoutes.includes(req.nextUrl.pathname);
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                getAll() {
+                    return request.cookies.getAll();
+                },
+                setAll(cookiesToSet) {
+                    cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
+                    supabaseResponse = NextResponse.next({
+                        request,
+                    });
+                    cookiesToSet.forEach(({ name, value, options }) =>
+                        supabaseResponse.cookies.set(name, value, options)
+                    );
+                },
+            },
+        }
+    );
 
-  // 如果使用者已登入，且正在訪問公共路由，將他們導向會員中心
-  if (user && isPublicRoute) {
-    return NextResponse.redirect(new URL('/auth/member', req.url));
-  }
+    // refreshing the auth token
+    // const {data}=await supabase.auth.getUser();
+    // console.log(data)
+    const { data: { user } } = await supabase.auth.getUser();
+    console.log(user);
 
-  // 如果使用者未登入，且正在訪問非公共路由，將他們導向登入頁面
-  if (!user && !isPublicRoute) {
-    return NextResponse.redirect(new URL('/auth/signin', req.url));
-  }
+    // 取得當前請求路徑
+    const path = request.nextUrl.pathname;
+    console.log('當前路徑:' + path);
 
-  return res;
+    const protectedPaths = ['/'];
+
+    // 檢查沒有使用者時 自動導入/login
+    if (!user && protectedPaths.includes(path)) {
+        const url = new URL('/login', request.url);
+        return NextResponse.redirect(url);
+    }
+
+    return supabaseResponse;
 }
 
-// 設定中介層要匹配哪些路徑
+// 設定 middleware 作用的範圍
 export const config = {
-  // 使用正則表達式來匹配所有路徑，除了 _next/static, _next/image, 和 favicon.ico
-  // 這樣你的靜態資源和 API 路由就不會受到影響
-  // matcher: ['/((?!api|_next/static|_next/image|favicon.ico|auth).*)'],
-  matcher: '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  // matcher: ['/auth/member','/'],
-    // matcher: ['/auth/member', '/dashboard', '/profile'],
+    // matcher: ['/', '/account'],
+    matcher: ['/'],
 };

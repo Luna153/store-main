@@ -2,6 +2,8 @@
 
 import { useEffect } from 'react';
 import { useTheme } from '../providers/theme-provider'; // 引入自定義的 Hook
+import { Toggle } from "@/components/ui/toggle";
+import { AiFillSun, AiFillMoon } from 'react-icons/ai';
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -12,8 +14,11 @@ export default function ThemeToggle() {
   }, [theme]);
 
   return (
-    <button onClick={toggleTheme} className="p-2 border rounded">
-      {theme === 'light' ? '切換成暗色模式' : '切換成亮色模式'}
-    </button>
+    <>
+    {/* <div className="relative"></div> */}
+      <Toggle onClick={toggleTheme} className=" border rounded-full absolute top-5 right-5">
+        {theme === 'light' ? <AiFillSun /> : <AiFillMoon />}
+      </Toggle>
+    </>
   );
 }
