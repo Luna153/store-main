@@ -50,7 +50,7 @@ export default function LoginPage() {
         form.reset();
     }
 
-    const { signUp, signIn } = useAuth();
+    const { signUp } = useAuth();
 
 
 

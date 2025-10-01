@@ -30,21 +30,32 @@ export async function middleware(request: NextRequest) {
     );
 
     // refreshing the auth token
-    // const {data}=await supabase.auth.getUser();
-    // console.log(data)
     const { data: { user } } = await supabase.auth.getUser();
-    console.log(user);
+    // console.log(user)
 
     // 取得當前請求路徑
     const path = request.nextUrl.pathname;
-    console.log('當前路徑:' + path);
 
+
+    // 定義所有「不需登入」即可存取的路徑 (包含登入、註冊、忘記密碼)
+    const publicPaths = ['/login', '/signup', '/forgottenPassword', '/updatePassword'];
+
+    // 判斷當前路徑是否為公用路徑
+    const isPublicPath = publicPaths.includes(path);
+
+  // 判斷當前路徑是否為需要保護的路徑 (例如：會員中心、首頁)
     const protectedPaths = ['/'];
 
     // 檢查沒有使用者時 自動導入/login
     if (!user && protectedPaths.includes(path)) {
+        // console.log('沒有使用者')
         const url = new URL('/login', request.url);
         return NextResponse.redirect(url);
+    }
+
+    // 如果使用者已登入，且正在存取公用認證頁 (可選：導回首頁)
+    if (user && isPublicPath) {
+        return NextResponse.redirect(new URL('/', request.url));
     }
 
     return supabaseResponse;
@@ -52,6 +63,12 @@ export async function middleware(request: NextRequest) {
 
 // 設定 middleware 作用的範圍
 export const config = {
-    // matcher: ['/', '/account'],
-    matcher: ['/'],
+    // 匹配除了 _next/static, _next/image, favicon.ico, /login, /signup 等之外的所有路徑
+    matcher: [
+        // 匹配所有路徑，除了明確列出的：
+        // 排除 _next, api, static 等內建資料夾
+        '/((?!_next/static|_next/image|favicon.ico|api).*)',
+        // 排除公開的根路徑：
+        '/((?!login|signup|forgottenPassword|updatePassword).*)'
+    ],
 };
