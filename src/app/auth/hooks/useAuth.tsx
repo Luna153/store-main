@@ -195,6 +195,27 @@ export function useAuth() {
     };
 
     // 更新密碼
+    const updatePassword=async (password: string) => {
+
+        const { data, error} = await supabase.auth.updateUser({
+            password: password,
+            data: { hello: 'world' }
+        });
+
+        if (error) {
+            console.log('更新密碼錯誤');
+            console.error(error.message)
+        } else if (data) {
+            console.log('更新密碼');
+            signOut()
+            router.push('/');
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 模擬網路延遲
+        return { success: true };
+
+    };
+    // 編輯會員資料
     const updateProfile = async (name:string, password: string) => {
 
         const { data: updatePassword, error: updatePasswordError } = await supabase.auth.updateUser({
@@ -258,6 +279,7 @@ export function useAuth() {
         signUp,     // 👈 這是 Hook 內部的註冊函式
         signIn,     // 👈 這是 Hook 內部的登入函式
         forgottenPassword,
+        updatePassword,
         updateProfile,
         signInWithGoogle,
         error,
