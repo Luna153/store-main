@@ -2,6 +2,7 @@
 'use client';
 import { useEffect } from 'react';
 import { useAuth } from './auth/hooks/useAuth';
+import Header from '@/components/Header';
 
 export default function IndexPage() {
 
@@ -13,7 +14,7 @@ export default function IndexPage() {
 // queryData()
   return (
     <>
-    
+    <Header/>
     </>
   );
 }

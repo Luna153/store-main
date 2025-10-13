@@ -31,8 +31,8 @@ interface AuthContextType {
     forgottenPassword: (email: string) => Promise<{ success: boolean; error?: string; }>;
 
     // 會員資料操作
-    updatePassword: (password: string) => Promise<{ success: boolean; error?: string; }>;
-    updateName: (name: string) => Promise<{ success: boolean; error?: string; }>;
+    updatePassword: (password: string) => Promise<{ success: boolean; errorMessage?: string; }>;
+    updateName: (name: string) => Promise<{ success: boolean; errorMessage?: string; }>;
 }
 
 // ====================================================================
@@ -284,8 +284,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isLoading,
         queryData,
         signOut,
-        // 所有操作函式
 
+        // 所有操作函式
         signUp,
         signInWithGoogle,
         signIn,

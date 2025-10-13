@@ -78,6 +78,7 @@ export default function DialogComponent({ mode }: DialogComponentProps) {
 
         // 執行更新, 只需要傳遞需更新的欄位
         const result = mode == 'editName' ? await updateName(nameToUpdate) : await updatePassword(passwordToUpdate);
+        
 
         if (result.success) {
             queryData(); // 重取會員資料
@@ -85,6 +86,7 @@ export default function DialogComponent({ mode }: DialogComponentProps) {
             const successMessage = mode == 'editName'
                 ? `新名稱: ${nameToUpdate}`
                 : `密碼已成功更新`;
+
 
             toast.success("資料已成功儲存", { description: successMessage });
 

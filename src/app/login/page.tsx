@@ -147,8 +147,6 @@ export default function LoginPage() {
                         </form>
                     </Form>
                 </Card>
-
-                {/* <Button type="submit">Submit</Button> */}
             </div>
 
         </>
