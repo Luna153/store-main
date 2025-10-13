@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "./style/component.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,15 +118,19 @@
   }
   body {
     @apply bg-background text-foreground;
-    padding-top: 50px;
+    /* padding-top: 50px; */
     min-height: 100vh;
   }
 }
 
+@import "./style/component.css";
+
+
 /* 預設樣式 */
 html {
-  background-color: #fff;
+  /* background-color: #fff; */
   color: #000;
+  /* min-height: 100vh; */
 }
 
 /* 亮色模式的樣式 */
@@ -141,3 +144,4 @@ html.dark {
   background-color: #333;
   color: #f0f0f0;
 }
+

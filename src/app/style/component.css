@@ -1,7 +1,7 @@
 
-/* .forgottenPassword_alert .active{
+.forgottenPassword_alert .active{
     position: absolute;
     display: block;
     left: 50%;
     transform: translateX(-50%);
-} */
+}

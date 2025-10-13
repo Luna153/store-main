@@ -3,7 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-    console.log('middleware running');
+    // console.log('middleware running');
     let supabaseResponse = NextResponse.next({
         request,
     });
@@ -44,7 +44,7 @@ export async function middleware(request: NextRequest) {
     const isPublicPath = publicPaths.includes(path);
 
   // 判斷當前路徑是否為需要保護的路徑 (例如：會員中心、首頁)
-    const protectedPaths = ['/'];
+    const protectedPaths = ['/', '/account'];
 
     // 檢查沒有使用者時 自動導入/login
     if (!user && protectedPaths.includes(path)) {
@@ -55,7 +55,7 @@ export async function middleware(request: NextRequest) {
 
     // 如果使用者已登入，且正在存取公用認證頁 (可選：導回首頁)
     if (user && isPublicPath) {
-        return NextResponse.redirect(new URL('/', request.url));
+        return NextResponse.redirect(new URL('/account', request.url));
     }
 
     return supabaseResponse;

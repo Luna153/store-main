@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "./providers/theme-provider";
+import { ThemeProvider } from "./providers/ThemeProvider";
 import ThemeToggle from "./components/ThemeToggle";
 import { AuthProvider } from "./auth/hooks/useAuth";
 
@@ -35,8 +35,17 @@ export default function RootLayout({
           <AuthProvider>
             {children}
           </AuthProvider>
+          <Toaster
+            richColors={true}
+            toastOptions={{
+              classNames: {
+                // 應用於 success 類型的 Toast
+                success: 'bg-green-600 text-white',
+                // 應用於 error 類型的 Toast
+                error: 'bg-red-600 text-white',
+              }
+            }} />
         </ThemeProvider>
-        <Toaster />
 
       </body>
     </html>
