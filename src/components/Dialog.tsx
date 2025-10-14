@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useAuth } from "../auth/hooks/useAuth";
+import { useAuth } from "../app/auth/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { BiPencil } from 'react-icons/bi';
 

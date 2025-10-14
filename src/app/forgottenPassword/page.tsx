@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/alert";
 
 import { useAuth } from '../auth/hooks/useAuth';
-import { AlertComponent } from '../components/Alert';
+import { AlertComponent } from '../../components/Alert';
 
 
 export default function ForgottenPasswordPage() {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useTheme } from '../providers/ThemeProvider'; // 引入自定義的 Hook
+import { useTheme } from '../app/providers/ThemeProvider'; // 引入自定義的 Hook
 import { Toggle } from "@/components/ui/toggle";
 import { AiFillSun, AiFillMoon } from 'react-icons/ai';
 

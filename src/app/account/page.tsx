@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { FaCrown } from 'react-icons/fa';
-import DialogComponent from '../components/Dialog';
+import DialogComponent from '../../components/Dialog';
+import Link from 'next/link';
 
 export default function AccountPage() {
 
@@ -38,7 +39,10 @@ export default function AccountPage() {
 
   return (
     <>
-      <div className=' mx-auto'>
+      <div className='mx-auto pt-20'>
+        <div className="ml-20 mb-5">
+          <Link href='/'>Home</Link>
+        </div>
         <Card className='mx-20'>
           <CardHeader>
             <div className='flex items-center'>

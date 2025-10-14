@@ -25,7 +25,7 @@ import { useForm } from "react-hook-form";
 
 import { z } from "zod";
 import { useAuth } from '../auth/hooks/useAuth';
-import ThemeToggle from '../components/ThemeToggle';
+import ThemeToggle from '../../components/ThemeToggle';
 
 
 export default function LoginPage() {
