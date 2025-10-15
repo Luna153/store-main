@@ -1,19 +1,18 @@
 'use client';
 import React, { useState } from 'react';
-import { FaShoppingCart, FaHeart, FaRegHeart } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
 
-interface productProps {
-    // image: string,
-    name: string,
-    price: number,
-}
+import { FaShoppingCart, FaHeart, FaRegHeart } from 'react-icons/fa';
+import { Product } from '@/type/product';
+
 // 
-export default function ProductCard({ name, price }: productProps) {
+export default function ProductCard({ name, price, product_id }: Product) {
     const [wishList, setWishList] = useState(false);
+    const router = useRouter();
 
     return (
         <>
-            <div className="card aspect-3/4 bg-slate-100 rounded-sm grid grid-rows-3 gap-2 py-4 px-3 w-full h-auto">
+            <div className="card aspect-3/4 bg-slate-100 rounded-sm grid grid-rows-3 gap-2 py-4 px-3 w-full h-auto" onClick={() => router.push(`/product/${product_id}`)}>
                 <div className="card_header row-span-2 bg-slate-200 w-full h-full "></div>
                 <div className="card_content text-end">
                     <div className="card_name">{name}</div>
