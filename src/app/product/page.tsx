@@ -1,11 +1,11 @@
 import React from 'react';
 import ProductCard from '@/components/product/Card';
 import { createClient } from '@/utils/supabase/client';
+import Header from '@/components/Header';
 
 
 export default async function ProductPage() {
     const supabase = createClient();
-
 
     const { data: productItems, error } = await supabase
         .from('ProductTable')
@@ -20,6 +20,7 @@ export default async function ProductPage() {
 
     return (
         <>
+        <Header/>
             <h1>Product Page</h1>
             <div className="grid grid-cols-4 gap-2">
                 {productItems.map(i => (

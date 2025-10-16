@@ -14,11 +14,6 @@ export default function Header() {
     const { profile, signOut } = useAuth();
     const router = useRouter();
 
-    useEffect(() => {
-        console.log(profile);
-
-    }, [profile]);
-
     const handleRouter = (routerTo: string) => {
         router.push(`/${routerTo}`);
 

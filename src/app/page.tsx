@@ -8,12 +8,7 @@ import Link from 'next/link';
 
 export default function IndexPage() {
 
-  // const { profile,queryData } = useAuth();
-  // console.log(profile)
-  // useEffect(()=>{
-  //   queryData()
-  // },[])
-// queryData()
+
   return (
     <>
     <Header/>

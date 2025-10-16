@@ -130,6 +130,7 @@
 html {
   /* background-color: #fff; */
   color: #000;
+  scroll-padding-top: 80px;
   /* min-height: 100vh; */
 }
 

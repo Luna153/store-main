@@ -25,7 +25,7 @@ export default function AccountPage() {
   useEffect(() => {
     // 只有在 profile 狀態為空時 (第一次載入) 時才執行查詢，避免不必要的資料庫呼叫
     if (!profile && !isLogout && isFirstLogin) {
-      queryData();
+      // queryData();
       setIsFirstLogin(false);
     }
 

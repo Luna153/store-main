@@ -2,13 +2,30 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+
 import { FaShoppingCart, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { Product } from '@/type/product';
+import { useAuth } from '@/app/auth/hooks/useAuth';
+import { addToWishListAction } from '@/lib/actions/wishlist';
+// import { createClient } from '@/utils/supabase/client';
 
 // 
 export default function ProductCard({ name, price, product_id }: Product) {
     const [wishList, setWishList] = useState(false);
     const router = useRouter();
+    const { profile } = useAuth();
+    // const supabase = createClient();
+
+
+    const handleWishList = (event) => {
+        event.stopPropagation();
+        setWishList(!wishList);
+        const member_id = profile.member_id;
+        addToWishListAction({ product_id});
+
+
+
+    };
 
     return (
         <>
@@ -19,7 +36,7 @@ export default function ProductCard({ name, price, product_id }: Product) {
                     <div className="card_price">{`$${price}`}</div>
                 </div>
                 <div className="card_footer flex justify-end gap-2">
-                    {wishList ? (<FaHeart className='my-1' onClick={() => setWishList(!wishList)} />) : (<FaRegHeart className='my-1' onClick={() => setWishList(!wishList)} />)}
+                    {wishList ? (<FaHeart className='my-1' onClick={(event) => handleWishList(event)} />) : (<FaRegHeart className='my-1' onClick={(event) => handleWishList(event)} />)}
                     <FaShoppingCart className='my-1' />
                 </div>
             </div>

@@ -11,7 +11,7 @@ import { success } from 'zod';
 // 1. 類型定義 (請在 '@/types/auth' 中實際定義)
 // ====================================================================
 interface UserProfile {
-    id: string,
+    member_id: string,
     email: string,
     name: string,
     created_at: string;
@@ -107,7 +107,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         // 更新核心狀態
         const fullProfile: UserProfile = {
-            id: memberData.id,
+            member_id: memberData.member_id,
             email: user.email,
             name: memberData.name,
             created_at: memberData.created_at
@@ -240,7 +240,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const { data, error } = await supabase
             .from('MemberTable')
             .update({ name: name })
-            .eq('id', profile.id)
+            .eq('member_id', profile.member_id)
             .select();
 
         if (error) {
@@ -302,162 +302,3 @@ export function AuthProvider({ children }: AuthProviderProps) {
         </AuthContext.Provider>
     );
 }
-
-// export function useAuth() {
-//     // 1. 使用 useContext 取得 AuthProvider 提供的 value
-//     const context = useContext(AuthContext);
-
-//     // 錯誤檢查：確保 Hook 被使用在 Provider 內部
-//     if (context == null) {
-//         throw new Error('useAuth must be used within an AuthProvider');
-//     }
-
-//     // 從 Context 取得狀態和函式
-//     const { profile, queryData, signOut } = context;
-
-
-//     // 從 Hook 內部取得額外依賴
-//     // const [error, setError] = useState<string | null>(null);
-//     const supabase = createClient();
-//     const router = useRouter();
-
-//     // 註冊
-//     const signUp = async (name: string, email: string, password: string) => {
-//         // 1. 呼叫 Supabase Auth 註冊，這會自動在 auth.users 建立新使用者
-//         let { data: signupData, error: signupError } = await supabase.auth.signUp({
-//             email,
-//             password
-//         });
-
-//         if (signupError) {
-//             return { signupError: signupError.message };
-//         }
-
-//         // 2. 如果 Auth 註冊成功，取得新使用者的 ID
-//         const userId = signupData?.user.id;
-//         let { data: insertData, error: insertError } = await supabase
-//             .from('MemberTable')
-//             .insert({ id: userId, name: name },);
-
-//         if (insertError) {
-//             return { insertFail: insertError.message };
-//         } else {
-//             // 3. 所有步驟都成功，回傳成功訊息
-//             router.push('/account');
-//             return { success: true };
-//         }
-//     };
-
-//     // 第三方註冊 (google)
-//     const signInWithGoogle = async () => {
-//         let { data, error } = await supabase.auth.signInWithOAuth({
-//             provider: 'google',
-//             options: {
-//                 redirectTo: `${window.location.origin}/auth/callback`,
-
-//                 // 用來請求 Google 授權範圍:獲取 Email 和基本 Profile 資訊
-//                 scopes: 'email profile'
-//             }
-//         });
-
-//         if (error) {
-//             console.error('Google 註冊失敗', error.message);
-//             return { success: false, error: error.message };
-//         }
-
-//         // data包含一個 url, 瀏覽器會自動跳轉到 Google 登入頁
-//         if (data.url) {
-
-//             console.log(data);
-//             window.location.href = data.url;
-//             return { success: true };
-//         }
-//     };
-//     // 登入
-//     const signIn = async (email: string, password: string) => {
-//         let { data, error } = await supabase.auth.signInWithPassword({
-//             email,
-//             password,
-//         });
-
-//         if (error) {
-//             console.log('登入失敗');
-//             // 登入失敗，回傳錯誤訊息
-//             return { success: false, error: error.message };
-//         } else {
-//             console.log('登入成功');
-//             await queryData();
-//             // console.log(profile)
-//             router.refresh();
-//             return { success: true };
-//         }
-
-//     };
-
-
-//     // 忘記密碼(寄驗證信)
-//     const forgottenPassword = async (email: string) => {
-
-//         let { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-//             // 關鍵：設定重設密碼後要導向的頁面 URL
-//             redirectTo: `${window.location.origin}/updatePassword`,
-//         });
-
-//         if (error) {
-//             // 寄送email失敗，回傳錯誤訊息
-//             return { success: false, error: error.message };
-//         }
-//         else if (data) {
-//             console.log(data);
-//         }
-//     };
-
-//     // 更新密碼
-//     const updatePassword = async (password: string) => {
-
-//         const { data, error } = await supabase.auth.updateUser({
-//             password: password,
-//         });
-
-//         if (error) {
-//             console.log('更新密碼錯誤');
-//             // setError(error.message)
-//             return { success: false, errorMessage: error.message };
-//         } else {
-//             console.log('更新密碼');
-//             // await new Promise(resolve => setTimeout(resolve, 1000)); // 模擬網路延遲
-//             return { success: true };
-//         }
-//     };
-//     // 編輯會員名稱
-//     const updateName = async (name: string) => {
-//         const { data, error } = await supabase
-//             .from('MemberTable')
-//             .update({ name: name })
-//             .eq('id', profile.id)
-//             .select();
-
-//         if (error) {
-//             console.log('更改名稱錯誤');
-//             return { success: false, errorMessage: error.message };
-//         } else {
-//             console.log('更改名稱成功');
-//             return { success: true };
-//         }
-//     };
-
-
-//     // 最終返回所有狀態和函式
-//     return {
-//         profile,    // 👈 這是來自 Context 的會員資料
-//         queryData,  // 👈 這是來自 Context 的查詢函式
-//         signOut,    // 👈 這是來自 Context 的登出函式
-//         signUp,     // 👈 這是 Hook 內部的註冊函式
-//         signIn,     // 👈 這是 Hook 內部的登入函式
-//         forgottenPassword,
-//         updatePassword,
-//         updateName,
-//         signInWithGoogle,
-//         // error,
-//     };
-// }

@@ -3,7 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-    // console.log('middleware running');
+    console.log('middleware running');
     let supabaseResponse = NextResponse.next({
         request,
     });
