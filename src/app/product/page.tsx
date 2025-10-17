@@ -1,7 +1,7 @@
 import React from 'react';
 import ProductCard from '@/components/product/Card';
 import Header from '@/components/Header';
-import {  findProdcutAction } from '@/lib/actions/product';
+import { findProdcutAction } from '@/lib/actions/product';
 
 
 export default async function ProductPage() {

@@ -1,22 +1,22 @@
 'use server';
-import { ActionResponse } from '@/type/product';
 import { createClient } from '@/utils/supabase/server';
-import { success } from 'zod';
 
 // 查找登入會員資料
 export async function findMemberAction() {
     const supabase = await createClient();
+
     const { data: { user }, error } = await supabase.auth.getUser();
 
+    if (!user) {
+        return null;
+    }
     if (error) {
         console.error(`Error to find member data`, error.message);
-        // return {success:false, error:error.message}
     }
-    else {
-        return user.id;
-    }
+    return user.id;
 }
-// 查找登入會員資料
+
+// 所有產品資訊
 export async function findProdcutAction() {
     const supabase = await createClient();
     const { data, error } = await supabase
@@ -28,7 +28,7 @@ export async function findProdcutAction() {
         console.error('SUPABASE_QUERY_ERROR:', error);
     } else {
         // console.log(data);
-        return data;
+        return data || [];
     }
 
 }

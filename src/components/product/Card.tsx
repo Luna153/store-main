@@ -2,12 +2,14 @@ import React from 'react';
 import { FaShoppingCart, FaHeart, FaRegHeart } from 'react-icons/fa';
 import WishListButton from './WishListButton';
 import { createClient } from '@/utils/supabase/server';
-import { findMemberAction, findProdcutAction } from '@/lib/actions/product';
+import { findMemberAction } from '@/lib/actions/product';
+
 
 
 // 查找產品收藏狀態
 async function findIsFavoraiteState(memberId, productId) {
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
     const { data, error } = await supabase
         .from('WishListTable')
         .select('wishList_id')
@@ -15,9 +17,11 @@ async function findIsFavoraiteState(memberId, productId) {
         .eq('product_id', productId)
         .maybeSingle();
 
+    if (!user) {
+        return;
+    }
     if (error) {
         console.error('Error checking favorite existence:', error);
-
         throw new Error(`Database query failed: ${error.message}`);
     }
 
@@ -30,7 +34,8 @@ async function findIsFavoraiteState(memberId, productId) {
 
 export default async function ProductCard({ name, price, productId }) {
     const memberId = await findMemberAction() || '';
-    const favoritedState=await findIsFavoraiteState(memberId, productId)
+    const favoritedState = await findIsFavoraiteState(memberId, productId);
+    const isLoggedIn = !!memberId;
     return (
         <>
             {/* <div className="card aspect-3/4 bg-slate-100 rounded-sm grid grid-rows-3 gap-2 py-4 px-3 w-full h-auto" onClick={() => router.push(`/product/${product_id}`)}> */}
@@ -41,8 +46,7 @@ export default async function ProductCard({ name, price, productId }) {
                     <div className="card_price">{`$${price}`}</div>
                 </div>
                 <div className="card_footer flex justify-end gap-2">
-                    <WishListButton memberId={memberId} productId={productId} favoritedState={favoritedState}/>
-                    {/* {favoritedState ? (<FaHeart className='my-1'/>) : (<FaRegHeart className='my-1'/>)} */}
+                    <WishListButton memberId={memberId} productId={productId} favoritedState={favoritedState} isLoggedIn={isLoggedIn} />
                     <FaShoppingCart className='my-1' />
                 </div>
             </div>
