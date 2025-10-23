@@ -60,16 +60,18 @@ export default function WishListButton({ memberId, productId, favoritedState, is
 
     const [initFavoriteState, setInitFavoriteState] = useState(favoritedState);
 
-    const handleToggleFavorite = () => {
-        // e.stopPropagation();
+    const handleToggleFavorite = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        e.preventDefault();
         toggleWishlist(initFavoriteState, memberId, productId);
         setInitFavoriteState(!initFavoriteState);
-
     };
     return (
         <>
             {/* 根據狀態決定按鈕樣式 */}
-            {initFavoriteState ? (<FaHeart className='my-1' onClick={() => handleToggleFavorite()} />) : (<FaRegHeart className='my-1' onClick={() => handleToggleFavorite()} />)}
+            <button onClick={handleToggleFavorite}>
+                {initFavoriteState ? (<FaHeart className='my-1' />) : (<FaRegHeart className='my-1' />)}
+            </button>
         </>
     );
 }

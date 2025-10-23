@@ -3,6 +3,7 @@ import { FaShoppingCart, FaHeart, FaRegHeart } from 'react-icons/fa';
 import WishListButton from './WishListButton';
 import { createClient } from '@/utils/supabase/server';
 import { findMemberAction } from '@/lib/actions/product';
+import Link from 'next/link';
 
 
 
@@ -38,6 +39,7 @@ export default async function ProductCard({ name, price, productId }) {
     const isLoggedIn = !!memberId;
     return (
         <>
+        <Link href={`/product/${productId}`}>
             {/* <div className="card aspect-3/4 bg-slate-100 rounded-sm grid grid-rows-3 gap-2 py-4 px-3 w-full h-auto" onClick={() => router.push(`/product/${product_id}`)}> */}
             <div className="card aspect-3/4 bg-slate-100 rounded-sm grid grid-rows-3 gap-2 py-4 px-3 w-full h-auto">
                 <div className="card_header row-span-2 bg-slate-200 w-full h-full "></div>
@@ -47,9 +49,10 @@ export default async function ProductCard({ name, price, productId }) {
                 </div>
                 <div className="card_footer flex justify-end gap-2">
                     <WishListButton memberId={memberId} productId={productId} favoritedState={favoritedState} isLoggedIn={isLoggedIn} />
-                    <FaShoppingCart className='my-1' />
+                    {/* <FaShoppingCart className='my-1' /> */}
                 </div>
             </div>
+        </Link>
         </>
     );
 }

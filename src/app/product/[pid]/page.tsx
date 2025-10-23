@@ -1,11 +1,14 @@
+// 'use client'
 import { notFound } from 'next/navigation';
 
 // 這裡必須使用 Next.js 提供得伺服器客戶端, 才能安全的使用 Service Role Key
 import { createClient } from '@/utils/supabase/client';
+import Link from 'next/link';
+import StandardButton from '@/components/product/StandardButton';
 
 
 // 頁面元件使用 ProductDetailPageProps 進行類型註解
-export default async function ProductDetailPage({params}) {
+export default async function ProductDetailPage({ params }) {
 
     // 獲取並解析產品 ID
     // const productId =  params.pid;
@@ -20,31 +23,59 @@ export default async function ProductDetailPage({params}) {
     // 執行 Supabase 查詢
     const supabase = createClient();
 
-    const { data, error } = await supabase
+    // 產品規格
+    const { data: standard, error: standardError } = await supabase
+        .from('StandardTable')
+        .select('*');
+    // .single();
+
+    // console.log(standard)
+    // 產品資訊
+    const { data: productInfo, error: productInfoError } = await supabase
         .from('ProductTable')
         .select('*')
         .eq('product_id', idAsNumber) // 使用數字 ID 進行精確匹配
         .single(); // 類型斷言: 告訴 TypeScript 返回的數據符合 Product 介面
 
     // 錯誤處理
-    if (error) {
-        console.error('SUPABASE_QUERY_ERROR', error);
+    if (productInfoError) {
+        console.error('SUPABASE_QUERY_ERROR', productInfoError);
 
         // 在生產環境中, 可以拋出錯誤給 error.tsx 處理
         throw new Error('無法載入產品詳情, 請稍後再試');
     }
 
     // 找不到產品處理 (404)
-    if (!data) {
+    if (!productInfo) {
         notFound();
     }
 
-    const product = data ; 
+    const product = productInfo;
 
     return (
         <>
-            <h2>商品名稱: {product.name}</h2>
-            <h3>價格: ${product.price.toFixed(0)}</h3>
+            <div className='bg-amber-50 p-5 h-screen'>
+                <div className="flex gap-3 mx-auto h-full">
+                    <div className="bg-sky-500 flex-1 h-[50%] "></div>
+                    <div className="bg-sky-100 flex-1 h-[50%]">
+                        <div className="py-5 px-5">
+                            <h2>商品名稱: {product.name}</h2>
+                            <h3>價格: ${product.price.toFixed(0)}</h3>
+                            <h3>規格: </h3>
+                            <div className="flex gap-3">
+                                <StandardButton standardItems={standard} />
+
+                                {/* <button className='w-20 py-1 border border-solid rounded-sm border-lime-400'>A</button>
+                                <button className='w-20 py-1 border border-solid rounded-sm border-lime-400'>B</button>
+                                <button className='w-20 py-1 border border-solid rounded-sm border-lime-400'>C</button> */}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
         </>
     );
 
